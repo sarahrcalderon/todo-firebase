@@ -1,0 +1,322 @@
+.app {
+  background: white;
+  border-radius: 24px;
+  padding: 35px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  min-height: 500px;
+}
+
+.card-login,
+.card-cadastro {
+  max-width: 450px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.logo-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.card-header h2 {
+  color: #1a1a2e;
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.card-header p {
+  color: #666;
+  font-size: 16px;
+}
+
+.campo-formulario {
+  margin-bottom: 22px;
+}
+
+.campo-formulario label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.icone-input {
+  position: absolute;
+  left: 14px;
+  color: #9ca3af;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.input-wrapper input {
+  width: 100%;
+  padding: 14px 16px 14px 48px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  background: #fafafa;
+  color: #1a1a2e;
+}
+
+.input-wrapper input:focus {
+  outline: none;
+  border-color: #667eea;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+}
+
+.input-wrapper input:focus ~ .icone-input,
+.input-wrapper input:focus + .icone-input {
+  color: #667eea;
+}
+
+.input-wrapper input:not(:placeholder-shown) ~ .icone-input,
+.input-wrapper input:not(:placeholder-shown) + .icone-input {
+  color: #667eea;
+}
+
+.botao-mostrar-senha {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.botao-mostrar-senha:hover {
+  color: #667eea;
+  background: #f3f4f6;
+}
+
+/* ESPAÇO EXTRA PARA INPUTS COM BOTÃO DE MOSTRAR SENHA */
+.input-wrapper .botao-mostrar-senha ~ input,
+.input-wrapper input:has(+ .botao-mostrar-senha) {
+  padding-right: 50px;
+}
+
+/* ============================================
+   FORÇA DA SENHA
+   ============================================ */
+
+.forca-senha {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.barra-forca {
+  flex: 1;
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.barra-forca-preenchida {
+  height: 100%;
+  transition:
+    width 0.3s ease,
+    background 0.3s ease;
+  border-radius: 10px;
+}
+
+/* ============================================
+   MENSAGENS DE ERRO
+   ============================================ */
+
+.mensagem-erro {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  border-left: 4px solid #dc2626;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.opcoes-login {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+.checkbox-lembrar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #666;
+}
+
+.checkbox-lembrar input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  accent-color: #667eea;
+  cursor: pointer;
+}
+
+.esqueci-senha {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.esqueci-senha:hover {
+  color: #5a6fd6;
+  text-decoration: underline;
+}
+
+.botao-entrar,
+.botao-cadastrar {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.botao-entrar:hover,
+.botao-cadastrar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.botao-entrar:disabled,
+.botao-cadastrar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 24px 0;
+  color: #999;
+  font-size: 14px;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+.divider::before {
+  margin-right: 16px;
+}
+
+.divider::after {
+  margin-left: 16px;
+}
+
+.link-cadastro,
+.link-login {
+  text-align: center;
+  color: #666;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.link-cadastro a,
+.link-login a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.link-cadastro a:hover,
+.link-login a:hover {
+  color: #5a6fd6;
+  text-decoration: underline;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================================
+   RESPONSIVO
+   ============================================ */
+
+@media (max-width: 640px) {
+  .app {
+    padding: 20px;
+  }
+
+  .card-login,
+  .card-cadastro {
+    padding: 0;
+  }
+
+  .opcoes-login {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .input-wrapper input {
+    font-size: 14px;
+    padding: 12px 14px 12px 44px;
+  }
+
+  .icone-input {
+    font-size: 16px;
+    left: 12px;
+  }
+}
