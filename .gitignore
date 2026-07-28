@@ -75,6 +75,8 @@ lerna-debug.log*
 *.temp
 .cache/
 *.cache
+**/.cache/
+**/*.cache
 
 # ============================================
 # ARQUIVOS DE DEPLOY
