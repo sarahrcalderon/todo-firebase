@@ -2,12 +2,13 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
+  updateProfile,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
-  updateProfile
 } from 'firebase/auth';
-import { auth } from '../firebase/config';
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase/config';
 
 export const AuthContext = createContext(null);
 
@@ -21,6 +22,13 @@ async function criarConta(email, senha, nome) {
   await updateProfile(credenciais.user, {
     displayName: nome
   });
+
+  await setDoc(doc(db, 'usuarios', credenciais.user.uid), {
+    email: credenciais.user.email,
+    displayName: nome,
+    photoURL: credenciais.user.photoURL || null,
+    atualizadoEm: serverTimestamp(),
+  }, { merge: true });
 
   return credenciais.user;
 }
@@ -51,12 +59,40 @@ export function AuthProvider({ children }) {
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
+    let ativo = true;
+
     const unsubscribe = onAuthStateChanged(auth, (usuarioAtual) => {
+      if (!ativo) {
+        return;
+      }
+
+      if (!usuarioAtual) {
+        setUsuario(null);
+        setCarregando(false);
+        return;
+      }
+
       setUsuario(usuarioAtual);
       setCarregando(false);
+
+      void (async () => {
+        try {
+          const referenciaUsuario = doc(db, 'usuarios', usuarioAtual.uid);
+          await setDoc(referenciaUsuario, {
+            email: usuarioAtual.email,
+            displayName: usuarioAtual.displayName || null,
+            atualizadoEm: serverTimestamp(),
+          }, { merge: true });
+        } catch (error) {
+          console.warn('Não foi possível sincronizar o perfil do usuário:', error);
+        }
+      })();
     });
 
-    return () => unsubscribe();
+    return () => {
+      ativo = false;
+      unsubscribe();
+    };
   }, []);
 
   const login = async (email, senha) => {

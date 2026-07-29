@@ -1,26 +1,302 @@
-.container-lista {
-  padding: 10px;
-  min-height: 500px;
+.container-lista-full {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #f0f2f5;
+  overflow: hidden;
 }
 
-.cabecalho {
+.layout-duas-colunas {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* ============================================
+   COLUNA ESQUERDA - PERFIL
+   ============================================ */
+
+.coluna-perfil {
+  width: 320px;
+  min-width: 320px;
+  height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.perfil-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 280px;
+}
+
+/* ============================================
+   AVATAR / FOTO DE PERFIL
+   ============================================ */
+
+.avatar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.avatar-circle {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 4px solid rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.avatar-circle:hover {
+  transform: scale(1.05);
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.avatar-imagem {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-iniciais {
+  font-size: 56px;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.avatar-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  color: white;
+  border-radius: 50%;
+}
+
+.avatar-circle:hover .avatar-overlay {
+  opacity: 1;
+}
+
+.spinner-upload {
+  animation: spin 1s linear infinite;
+  font-size: 28px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.avatar-hint {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.botao-salvar-foto {
+  margin-top: 12px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    opacity 0.25s ease;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.botao-salvar-foto:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.28);
+  transform: translateY(-1px);
+}
+
+.botao-salvar-foto:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  box-shadow: none;
+}
+
+/* ============================================
+   INFORMAÇÕES DO PERFIL
+   ============================================ */
+
+.perfil-info {
+  text-align: center;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.perfil-nome {
+  color: white;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  word-break: break-word;
+}
+
+.perfil-email {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.perfil-admin-badge {
+  display: inline-block;
+  margin-top: 8px;
+  background: #f59e0b;
+  color: white;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ============================================
+   ESTATÍSTICAS DO PERFIL
+   ============================================ */
+
+.perfil-estatisticas {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  width: 100%;
+  backdrop-filter: blur(10px);
+}
+
+.estatistica-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.estatistica-valor {
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.estatistica-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.estatistica-divider {
+  width: 1px;
+  height: 35px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 12px;
+}
+
+/* ============================================
+   BOTÃO SAIR DO PERFIL
+   ============================================ */
+
+.perfil-botao-sair {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.perfil-botao-sair:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.perfil-botao-sair:active {
+  transform: translateY(0);
+}
+
+/* ============================================
+   COLUNA DIREITA - TAREFAS
+   ============================================ */
+
+.coluna-tarefas {
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 30px 40px;
+  background: #f8fafc;
+}
+
+/* ============================================
+   CABEÇALHO DAS TAREFAS
+   ============================================ */
+
+.cabecalho-tarefas {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
   padding-bottom: 20px;
-  border-bottom: 2px solid #f3f4f6;
+  border-bottom: 2px solid #e5e7eb;
   flex-wrap: wrap;
   gap: 15px;
 }
 
-.cabecalho-esquerdo {
+.cabecalho-tarefas-esquerdo {
   display: flex;
   align-items: center;
   gap: 16px;
 }
 
-.cabecalho h1 {
+.cabecalho-tarefas h1 {
   color: #1a1a2e;
   font-size: 24px;
   display: flex;
@@ -36,66 +312,17 @@
   font-weight: 600;
 }
 
-.info-usuario {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.usuario-info {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: #f3f4f6;
-  padding: 8px 16px;
-  border-radius: 10px;
-  font-size: 14px;
-  color: #333;
-}
-
-.icone-usuario {
-  color: #667eea;
-  font-size: 18px;
-}
-
-.badge-admin {
-  background: #f59e0b;
-  color: white;
-  padding: 2px 12px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.botao-sair {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  background: #ef4444;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all 0.3s;
-}
-
-.botao-sair:hover {
-  background: #dc2626;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
-}
+/* ============================================
+   BARRA DE PROGRESSO
+   ============================================ */
 
 .progresso-container {
-  background: #f8fafc;
+  background: white;
   padding: 18px 20px;
   border-radius: 14px;
   margin-bottom: 24px;
   border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .progresso-info {
@@ -139,8 +366,8 @@
   align-items: center;
   gap: 8px;
   padding: 10px 18px;
-  background: #f3f4f6;
-  border: 2px solid transparent;
+  background: white;
+  border: 2px solid #e5e7eb;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s;
@@ -150,8 +377,9 @@
 }
 
 .filtros button:hover {
-  background: #e5e7eb;
+  background: #f3f4f6;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .filtros button.ativo {
@@ -176,6 +404,7 @@
 .botao-admin-filtro {
   background: #f59e0b !important;
   color: white !important;
+  border-color: #f59e0b !important;
 }
 
 .botao-admin-filtro:hover {
@@ -195,6 +424,7 @@
   border-radius: 12px;
   font-size: 15px;
   transition: all 0.3s;
+  background: white;
 }
 
 .formulario-tarefa input:focus {
@@ -203,30 +433,34 @@
   box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
 }
 
-.formulario-tarefa button {
+.botao-adicionar {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 14px 28px;
-  background: #2ecc71;
+  background: #6872dc;
   color: white;
   border: none;
   border-radius: 12px;
   font-weight: 600;
   font-size: 15px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(104, 114, 220, 0.4);
+  white-space: nowrap;
 }
 
-.formulario-tarefa button:hover {
-  background: #27ae60;
+.botao-adicionar:hover:not(:disabled) {
+  background: #5a64c9;
   transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+  box-shadow: 0 6px 20px rgba(104, 114, 220, 0.5);
 }
 
-/* ============================================
-   LISTA DE TAREFAS
-   ============================================ */
+.botao-adicionar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
 
 .lista-tarefas {
   list-style: none;
@@ -235,84 +469,84 @@
 
 .item-tarefa {
   display: flex;
-  align-items: center;
-  gap: 14px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
   padding: 14px 18px;
-  background: #f8fafc;
+  background: white;
   border-radius: 12px;
   margin-bottom: 10px;
   transition: all 0.3s;
-  border: 1px solid transparent;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .item-tarefa:hover {
-  background: #f1f5f9;
-  border-color: #e5e7eb;
+  background: #f8fafc;
+  border-color: #d1d5db;
   transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .item-tarefa.concluida {
   opacity: 0.7;
-  background: #f3f4f6;
+  background: #f9fafb;
 }
 
-.botao-check {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
+.item-tarefa-topo {
   display: flex;
-  align-items: center;
-  transition: transform 0.2s;
-  flex-shrink: 0;
-}
-
-.botao-check:hover {
-  transform: scale(1.1);
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
 }
 
 .texto-tarefa {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-size: 16px;
-  color: #1a1a2e;
-  word-break: break-word;
-}
-
-.item-tarefa.concluida .texto-tarefa {
-  text-decoration: line-through;
-  color: #9ca3af;
+  gap: 6px;
+  flex: 1;
 }
 
 .data-tarefa {
+  display: block;
+  color: #6b7280;
   font-size: 12px;
-  color: #9ca3af;
 }
 
-.input-edicao {
-  flex: 1;
-  padding: 8px 12px;
-  border: 2px solid #667eea;
-  border-radius: 8px;
-  font-size: 15px;
-  background: white;
-  min-width: 0;
-}
-
-.input-edicao:focus {
-  outline: none;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-}
+/* ============================================
+   BOTÕES DE AÇÃO (Editar/Excluir)
+   ============================================ */
 
 .botoes-tarefa {
   display: flex;
   gap: 8px;
   flex-shrink: 0;
+  justify-content: flex-end;
+  width: 100%;
+  padding-left: 32px;
 }
 
-.botao-editar,
+.botao-editar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  background: #f59e0b;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+}
+
+.botao-editar:hover {
+  background: #d97706;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
 .botao-excluir {
   display: flex;
   align-items: center;
@@ -321,36 +555,29 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
   font-size: 14px;
-}
-
-.botao-editar {
-  background: #3b82f6;
-  color: white;
-}
-
-.botao-editar:hover {
-  background: #2563eb;
-  transform: scale(1.05);
-}
-
-.botao-excluir {
   background: #ef4444;
-  color: white;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
 }
 
 .botao-excluir:hover {
   background: #dc2626;
   transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
+
+/* ============================================
+   MENSAGENS DE ESTADO VAZIO
+   ============================================ */
 
 .sem-tarefas {
   text-align: center;
   padding: 50px 20px;
   color: #9ca3af;
   font-size: 18px;
-  background: #f8fafc;
+  background: white;
   border-radius: 12px;
   border: 2px dashed #e5e7eb;
 }
@@ -366,54 +593,147 @@
   gap: 12px;
 }
 
-/* ============================================
-   ANIMAÇÕES
-   ============================================ */
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.item-tarefa {
-  animation: fadeIn 0.3s ease;
+.mensagem-erro {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 14px 18px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border-left: 4px solid #dc2626;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
 }
 
 /* ============================================
    RESPONSIVIDADE
    ============================================ */
 
+@media (max-width: 1024px) {
+  .coluna-perfil {
+    width: 260px;
+    min-width: 260px;
+    padding: 20px;
+  }
+
+  .avatar-circle {
+    width: 110px;
+    height: 110px;
+  }
+
+  .avatar-iniciais {
+    font-size: 42px;
+  }
+
+  .coluna-tarefas {
+    padding: 20px 24px;
+  }
+
+  .perfil-nome {
+    font-size: 18px;
+  }
+
+  .estatistica-valor {
+    font-size: 20px;
+  }
+}
+
 @media (max-width: 768px) {
-  .cabecalho {
+  .layout-duas-colunas {
     flex-direction: column;
-    align-items: stretch;
+    overflow-y: auto;
   }
 
-  .cabecalho-esquerdo {
+  .coluna-perfil {
+    width: 100%;
+    min-width: unset;
+    height: auto;
+    padding: 24px 20px;
+    flex-shrink: 0;
+  }
+
+  .perfil-container {
+    max-width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: center;
+    gap: 16px;
   }
 
-  .info-usuario {
-    flex-direction: column;
-    align-items: stretch;
+  .avatar-container {
+    margin-bottom: 0;
   }
 
-  .usuario-info {
-    justify-content: center;
+  .avatar-circle {
+    width: 80px;
+    height: 80px;
   }
 
-  .botao-sair {
-    justify-content: center;
+  .avatar-iniciais {
+    font-size: 32px;
+  }
+
+  .avatar-hint {
+    display: none;
+  }
+
+  .perfil-info {
+    text-align: left;
+    margin-bottom: 0;
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .perfil-nome {
+    font-size: 18px;
+  }
+
+  .perfil-email {
+    font-size: 13px;
+  }
+
+  .perfil-estatisticas {
+    padding: 12px 16px;
+    margin-bottom: 0;
+    width: auto;
+    flex: 1;
+    min-width: 150px;
+  }
+
+  .estatistica-valor {
+    font-size: 18px;
+  }
+
+  .perfil-botao-sair {
+    width: auto;
+    padding: 10px 20px;
+    font-size: 14px;
+    flex: 0 0 auto;
+  }
+
+  .coluna-tarefas {
+    height: auto;
+    overflow-y: visible;
+    padding: 16px 16px 30px;
+    flex: 1;
+  }
+
+  .cabecalho-tarefas {
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+  }
+
+  .cabecalho-tarefas h1 {
+    font-size: 20px;
   }
 
   .formulario-tarefa {
     flex-direction: column;
+  }
+
+  .botao-adicionar {
+    justify-content: center;
+    padding: 12px 20px;
   }
 
   .filtros {
@@ -422,31 +742,24 @@
 
   .filtros button {
     flex: 1;
-    min-width: 70px;
+    min-width: 60px;
     justify-content: center;
-    font-size: 13px;
+    font-size: 12px;
     padding: 8px 12px;
   }
-}
 
-@media (max-width: 480px) {
   .item-tarefa {
-    flex-wrap: wrap;
-    padding: 12px;
+    padding: 12px 14px;
+  }
+
+  .item-tarefa-topo {
     gap: 10px;
   }
 
   .botoes-tarefa {
     width: 100%;
     justify-content: flex-end;
-  }
-
-  .texto-tarefa {
-    font-size: 14px;
-  }
-
-  .cabecalho h1 {
-    font-size: 20px;
+    padding-left: 0;
   }
 
   .progresso-info {
@@ -455,9 +768,77 @@
     gap: 8px;
   }
 
-  .filtros button {
+  .sem-tarefas {
+    padding: 30px 16px;
+    font-size: 15px;
+  }
+
+  .estatistica-divider {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .coluna-perfil {
+    padding: 16px;
+  }
+
+  .perfil-container {
+    gap: 12px;
+  }
+
+  .avatar-circle {
+    width: 64px;
+    height: 64px;
+  }
+
+  .avatar-iniciais {
+    font-size: 26px;
+  }
+
+  .perfil-nome {
+    font-size: 16px;
+  }
+
+  .perfil-email {
     font-size: 12px;
+  }
+
+  .perfil-estatisticas {
+    padding: 10px 12px;
+    min-width: 120px;
+  }
+
+  .estatistica-valor {
+    font-size: 16px;
+  }
+
+  .estatistica-label {
+    font-size: 10px;
+  }
+
+  .coluna-tarefas {
+    padding: 12px;
+  }
+
+  .cabecalho-tarefas h1 {
+    font-size: 18px;
+  }
+
+  .badge-total {
+    font-size: 11px;
+    padding: 3px 10px;
+  }
+
+  .filtros button {
+    font-size: 11px;
     padding: 6px 10px;
+    min-width: 50px;
+  }
+
+  .contador-filtro {
+    font-size: 10px;
+    padding: 1px 8px;
   }
 
   .formulario-tarefa input {
@@ -465,9 +846,48 @@
     padding: 12px 14px;
   }
 
-  .formulario-tarefa button {
+  .botao-adicionar {
     font-size: 14px;
-    padding: 12px 20px;
-    justify-content: center;
+    padding: 12px 16px;
+  }
+
+  .item-tarefa {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .texto-tarefa {
+    font-size: 14px;
+  }
+
+  .botao-editar,
+  .botao-excluir {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .perfil-botao-sair {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}
+
+/* Telas muito altas */
+@media (min-height: 900px) {
+  .avatar-circle {
+    width: 160px;
+    height: 160px;
+  }
+
+  .avatar-iniciais {
+    font-size: 64px;
+  }
+
+  .perfil-nome {
+    font-size: 26px;
+  }
+
+  .coluna-tarefas {
+    padding: 40px 50px;
   }
 }

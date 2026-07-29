@@ -36,40 +36,44 @@ export function ItemTarefa({
 
   return (
     <li className={`item-tarefa ${tarefa.concluida ? 'concluida' : ''}`}>
-      <button
-        className="botao-check"
-        onClick={() => onAlternar(tarefa.id, tarefa.concluida)}
-        aria-label={tarefa.concluida ? 'Marcar como pendente' : 'Marcar como concluída'}
-      >
-        {tarefa.concluida ? (
-          <BsFillCheckCircleFill size={18} color="#2ecc71" />
-        ) : (
-          <FaCircle size={18} color="#d1d5db" />
-        )}
-      </button>
+      <div className="item-tarefa-topo">
+        <button
+          type="button"
+          className="botao-check"
+          onClick={() => onAlternar(tarefa.id, tarefa.concluida)}
+          aria-label={tarefa.concluida ? 'Marcar como pendente' : 'Marcar como concluída'}
+        >
+          {tarefa.concluida ? (
+            <BsFillCheckCircleFill size={18} color="#2ecc71" />
+          ) : (
+            <FaCircle size={18} color="#d1d5db" />
+          )}
+        </button>
 
-      {editando ? (
-        <input
-          type="text"
-          className="input-edicao"
-          value={textoEditado}
-          onChange={(e) => setTextoEditado(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && handleEditar()}
-          onBlur={handleEditar}
-          autoFocus
-        />
-      ) : (
-        <span className="texto-tarefa">
-          {tarefa.texto}
-          <small className="data-tarefa">
-            📅 {formatarData(tarefa.criadoEm)}
-          </small>
-        </span>
-      )}
+        {editando ? (
+          <input
+            type="text"
+            className="input-edicao"
+            value={textoEditado}
+            onChange={(e) => setTextoEditado(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleEditar()}
+            onBlur={handleEditar}
+            autoFocus
+          />
+        ) : (
+          <span className="texto-tarefa">
+            {tarefa.texto}
+            <small className="data-tarefa">
+              📅 {formatarData(tarefa.criadoEm)}
+            </small>
+          </span>
+        )}
+      </div>
 
       <div className="botoes-tarefa">
         {!editando && (
           <button 
+            type="button"
             onClick={() => {
               setEditando(true);
               setTextoEditado(tarefa.texto);
@@ -103,6 +107,7 @@ export function ItemTarefa({
           </button>
         )}
         <button 
+          type="button"
           onClick={() => {
             if (window.confirm('Tem certeza que deseja excluir esta tarefa?')) {
               onExcluir(tarefa.id);

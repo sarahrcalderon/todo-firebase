@@ -1,89 +1,233 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import * as tarefaService from '../services/tarefaService';
 
+function getCacheKey(usuarioId) {
+  return usuarioId ? `tarefas-cache:${usuarioId}` : null;
+}
+
+function carregarCacheTarefas(usuarioId) {
+  const chave = getCacheKey(usuarioId);
+  if (!chave) {
+    return [];
+  }
+
+  try {
+    const dados = localStorage.getItem(chave);
+    return dados ? JSON.parse(dados) : [];
+  } catch (error) {
+    console.warn('Não foi possível carregar o cache de tarefas:', error);
+    return [];
+  }
+}
+
+function salvarCacheTarefas(usuarioId, tarefas) {
+  const chave = getCacheKey(usuarioId);
+  if (!chave) {
+    return;
+  }
+
+  try {
+    localStorage.setItem(chave, JSON.stringify(tarefas));
+  } catch (error) {
+    console.warn('Não foi possível salvar o cache de tarefas:', error);
+  }
+}
+
+function ordenarTarefasLocal(tarefas) {
+  return [...tarefas].sort((a, b) => {
+    const concluidaA = a.concluida ? 1 : 0;
+    const concluidaB = b.concluida ? 1 : 0;
+
+    if (concluidaA !== concluidaB) {
+      return concluidaA - concluidaB;
+    }
+
+    const dataA = a.criadoEm ? new Date(a.criadoEm).getTime() : 0;
+    const dataB = b.criadoEm ? new Date(b.criadoEm).getTime() : 0;
+
+    return dataB - dataA;
+  });
+}
+
 export function useTarefas() {
   const { usuario } = useAuth();
+  const usuarioId = usuario?.uid;
   const [tarefas, setTarefas] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
+  const tarefasRef = useRef([]);
 
   useEffect(() => {
-    if (!usuario) {
+    tarefasRef.current = tarefas;
+  }, [tarefas]);
+
+  useEffect(() => {
+    if (!usuarioId) {
       setTarefas([]);
       setCarregando(false);
       return;
     }
 
-    setCarregando(true);
+    const tarefasCache = carregarCacheTarefas(usuarioId);
+
+    setTarefas(tarefasCache);
+    setCarregando(tarefasCache.length === 0);
     setErro(null);
 
     const removerListener = tarefaService.ouvirTarefas(
-      usuario.uid,
+      usuarioId,
       (tarefasCarregadas) => {
-        setTarefas(tarefasCarregadas);
+        if (tarefasCarregadas.length > 0 || tarefasCache.length === 0) {
+          const ordenadas = ordenarTarefasLocal(tarefasCarregadas);
+          setTarefas(ordenadas);
+          salvarCacheTarefas(usuarioId, ordenadas);
+        }
+
+        setCarregando(false);
+      },
+      (error) => {
+        setErro('Erro ao carregar tarefas: ' + error.message);
         setCarregando(false);
       },
     );
 
     return removerListener;
-  }, [usuario]);
+  }, [usuarioId]);
 
   const adicionarTarefa = useCallback(
     async (texto) => {
+      if (!usuarioId) {
+        throw new Error('Usuário não autenticado.');
+      }
+
       try {
         setErro(null);
-        await tarefaService.criarTarefa(usuario.uid, texto);
+        const referenciaTarefa = await tarefaService.criarTarefa(
+          usuarioId,
+          texto,
+        );
+        const agora = new Date();
+        const novaTarefa = {
+          id: referenciaTarefa.id,
+          texto: texto.trim(),
+          concluida: false,
+          usuarioId,
+          criadoEm: agora,
+          atualizadoEm: agora,
+        };
+
+        setTarefas((tarefasAtuais) => {
+          const proximaLista = ordenarTarefasLocal([
+            ...tarefasAtuais,
+            novaTarefa,
+          ]);
+          salvarCacheTarefas(usuarioId, proximaLista);
+          return proximaLista;
+        });
       } catch (error) {
         setErro('Erro ao adicionar tarefa: ' + error.message);
         console.error('Erro ao adicionar tarefa:', error);
         throw error;
       }
     },
-    [usuario],
+    [usuarioId],
   );
 
-  const alternarStatus = useCallback(async (tarefaId, concluidaAtual) => {
-    try {
-      setErro(null);
-      await tarefaService.alternarTarefa(tarefaId, concluidaAtual);
-    } catch (error) {
-      setErro('Erro ao atualizar tarefa: ' + error.message);
-      console.error('Erro ao atualizar tarefa:', error);
-      throw error;
-    }
-  }, []);
+  const alternarStatus = useCallback(
+    async (tarefaId, concluidaAtual) => {
+      try {
+        setErro(null);
+        await tarefaService.alternarTarefa(tarefaId, concluidaAtual);
 
-  const atualizarTarefa = useCallback(async (tarefaId, novoTexto) => {
-    try {
-      setErro(null);
-      await tarefaService.editarTarefa(tarefaId, novoTexto);
-    } catch (error) {
-      setErro('Erro ao editar tarefa: ' + error.message);
-      console.error('Erro ao editar tarefa:', error);
-      throw error;
-    }
-  }, []);
+        setTarefas((tarefasAtuais) => {
+          const proximaLista = ordenarTarefasLocal(
+            tarefasAtuais.map((tarefa) =>
+              tarefa.id === tarefaId
+                ? {
+                    ...tarefa,
+                    concluida: !concluidaAtual,
+                    atualizadoEm: new Date(),
+                  }
+                : tarefa,
+            ),
+          );
+          salvarCacheTarefas(usuarioId, proximaLista);
+          return proximaLista;
+        });
+      } catch (error) {
+        setErro('Erro ao atualizar tarefa: ' + error.message);
+        console.error('Erro ao atualizar tarefa:', error);
+        throw error;
+      }
+    },
+    [usuarioId],
+  );
 
-  const removerTarefa = useCallback(async (tarefaId) => {
-    try {
-      setErro(null);
-      await tarefaService.excluirTarefa(tarefaId);
-    } catch (error) {
-      setErro('Erro ao excluir tarefa: ' + error.message);
-      console.error('Erro ao excluir tarefa:', error);
-      throw error;
-    }
-  }, []);
+  const atualizarTarefa = useCallback(
+    async (tarefaId, novoTexto) => {
+      try {
+        setErro(null);
+        await tarefaService.editarTarefa(tarefaId, novoTexto);
 
-  const filtrarTarefas = useCallback((tarefas, filtro) => {
+        setTarefas((tarefasAtuais) => {
+          const proximaLista = ordenarTarefasLocal(
+            tarefasAtuais.map((tarefa) =>
+              tarefa.id === tarefaId
+                ? {
+                    ...tarefa,
+                    texto: novoTexto.trim(),
+                    atualizadoEm: new Date(),
+                  }
+                : tarefa,
+            ),
+          );
+          salvarCacheTarefas(usuarioId, proximaLista);
+          return proximaLista;
+        });
+      } catch (error) {
+        setErro('Erro ao editar tarefa: ' + error.message);
+        console.error('Erro ao editar tarefa:', error);
+        throw error;
+      }
+    },
+    [usuarioId],
+  );
+
+  const removerTarefa = useCallback(
+    async (tarefaId) => {
+      const tarefasAnteriores = tarefasRef.current;
+
+      setTarefas((tarefasAtuais) => {
+        const proximaLista = tarefasAtuais.filter(
+          (tarefa) => tarefa.id !== tarefaId,
+        );
+        salvarCacheTarefas(usuarioId, proximaLista);
+        return proximaLista;
+      });
+
+      try {
+        setErro(null);
+        await tarefaService.excluirTarefa(tarefaId);
+      } catch (error) {
+        setTarefas(tarefasAnteriores);
+        salvarCacheTarefas(usuarioId, tarefasAnteriores);
+        setErro('Erro ao excluir tarefa: ' + error.message);
+        console.error('Erro ao excluir tarefa:', error);
+        throw error;
+      }
+    },
+    [usuarioId],
+  );
+
+  const filtrarTarefas = useCallback((listaTarefas, filtro) => {
     switch (filtro) {
       case 'ativas':
-        return tarefas.filter((t) => !t.concluida);
+        return listaTarefas.filter((t) => !t.concluida);
       case 'concluidas':
-        return tarefas.filter((t) => t.concluida);
+        return listaTarefas.filter((t) => t.concluida);
       default:
-        return tarefas;
+        return listaTarefas;
     }
   }, []);
 

@@ -3,7 +3,6 @@ import {
   addDoc,
   query,
   where,
-  orderBy,
   onSnapshot,
   updateDoc,
   deleteDoc,
@@ -14,7 +13,23 @@ import { db } from '../firebase/config';
 
 const COLECAO_TAREFAS = 'tarefas';
 
-export function ouvirTarefas(usuarioId, callback) {
+function ordenarPorCriadoEm(tarefas) {
+  return tarefas.sort((a, b) => {
+    const concluidaA = a.concluida ? 1 : 0;
+    const concluidaB = b.concluida ? 1 : 0;
+
+    if (concluidaA !== concluidaB) {
+      return concluidaA - concluidaB;
+    }
+
+    const dataA = a.criadoEm?.toMillis ? a.criadoEm.toMillis() : 0;
+    const dataB = b.criadoEm?.toMillis ? b.criadoEm.toMillis() : 0;
+
+    return dataB - dataA;
+  });
+}
+
+export function ouvirTarefas(usuarioId, callback, onError) {
   if (!usuarioId) {
     callback([]);
     return () => {};
@@ -23,16 +38,24 @@ export function ouvirTarefas(usuarioId, callback) {
   const consulta = query(
     collection(db, COLECAO_TAREFAS),
     where('usuarioId', '==', usuarioId),
-    orderBy('criadoEm', 'desc'),
   );
 
-  const removerListener = onSnapshot(consulta, (snapshot) => {
-    const tarefas = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    callback(tarefas);
-  });
+  const removerListener = onSnapshot(
+    consulta,
+    (snapshot) => {
+      const tarefas = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      callback(ordenarPorCriadoEm(tarefas));
+    },
+    (error) => {
+      console.error('Erro ao ouvir tarefas:', error);
+      if (onError) {
+        onError(error);
+      }
+    },
+  );
 
   return removerListener;
 }
@@ -73,19 +96,25 @@ export async function excluirTarefa(tarefaId) {
   return await deleteDoc(doc(db, COLECAO_TAREFAS, tarefaId));
 }
 
-export function ouvirTodasTarefas(callback) {
-  const consulta = query(
-    collection(db, COLECAO_TAREFAS),
-    orderBy('criadoEm', 'desc'),
-  );
+export function ouvirTodasTarefas(callback, onError) {
+  const consulta = query(collection(db, COLECAO_TAREFAS));
 
-  const removerListener = onSnapshot(consulta, (snapshot) => {
-    const tarefas = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    callback(tarefas);
-  });
+  const removerListener = onSnapshot(
+    consulta,
+    (snapshot) => {
+      const tarefas = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      callback(ordenarPorCriadoEm(tarefas));
+    },
+    (error) => {
+      console.error('Erro ao ouvir todas as tarefas:', error);
+      if (onError) {
+        onError(error);
+      }
+    },
+  );
 
   return removerListener;
 }
