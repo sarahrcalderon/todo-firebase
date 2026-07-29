@@ -1,5 +1,3 @@
-
-
 import { useState } from 'react';
 import { 
   FaEdit, 
@@ -44,9 +42,9 @@ export function ItemTarefa({
         aria-label={tarefa.concluida ? 'Marcar como pendente' : 'Marcar como concluída'}
       >
         {tarefa.concluida ? (
-          <BsFillCheckCircleFill size={24} color="#2ecc71" />
+          <BsFillCheckCircleFill size={18} color="#2ecc71" />
         ) : (
-          <FaCircle size={24} color="#d1d5db" />
+          <FaCircle size={18} color="#d1d5db" />
         )}
       </button>
 
@@ -78,8 +76,30 @@ export function ItemTarefa({
             }}
             className="botao-editar"
             aria-label="Editar tarefa"
+              style={{
+                backgroundColor: '#7c3aed',  
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '8px 12px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(124, 58, 237, 0.3)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#6d28d9';
+                e.currentTarget.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#7c3aed';
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
           >
-            <FaEdit />
+            
+            <FaEdit/>
           </button>
         )}
         <button 
