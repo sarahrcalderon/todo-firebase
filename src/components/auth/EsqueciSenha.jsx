@@ -97,7 +97,7 @@ export function EsqueciSenha() {
             ) : (
               <>
               
-                Enviar Link de Recuperação
+                 Link de Recuperação
               </>
             )}
           </button>
